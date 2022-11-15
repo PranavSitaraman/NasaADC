@@ -29,6 +29,9 @@ xi_x, xi_y = np.mgrid[min[0]:max[0]:STEP[0], min[1]:max[1]:STEP[1]]
 data = sci.griddata(pts, vals, (xi_x, xi_y), method='linear', fill_value=0)
 print('SHAPE:', data.shape)
 
+# UNCOMMENT to save interpolated grid to file
+# np.savetxt(data)
+
 # create heatmap plot
 mask = data == 0
 heatmap = sns.heatmap(data, square=True, mask=mask, cbar=False, cmap='gist_yarg', xticklabels=False, yticklabels=False)

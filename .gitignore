@@ -1,4 +1,9 @@
+# large data files
+data/*.csv
+data/*.txt
+data/*.xyz
+data/*.pgm
+
+# UE5 content
 Lunar_Base_Demo/Saved
-faustini_rim_a
-scripts/cpp
 Lunar_Base_Demo/Content/StarterContent

@@ -1,19 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define INF 1e7
-#define ll long long
-#define ld long double
-const ll V = 4;
+#define ll int
+#define ld float 
+const ll V = 4000;
 int main()
 {
-    ld x1 = 0, y1 = 0, x2 = 2, y2 = 3;  // start and end points from user selection (0-indexed)
+    ld x1 = 3480, y1 = 3686, x2 = 2005, y2 = 1167;  // start and end points from user selection (0-indexed)
     bool distanceOptimized = true; // true for distance, false for elevation (from user selection)
     FILE* input = fopen("../data/grid.txt", "r");
     ld** graph = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)
     {
         graph[i] = (ld*)malloc(sizeof(ld) * V);
-        for (ll j = 0; j < V; j++) fscanf(input, "%Lf", &graph[i][j]);
+        for (ll j = 0; j < V; j++) fscanf(input, "%f", &graph[i][j]);
     }
     fclose(input);
     ld** elevation = (ld**)malloc(sizeof(ld*) * V * V);
@@ -22,6 +22,14 @@ int main()
         elevation[i] = (ld*)malloc(sizeof(ld) * V * V);
         for (ll j = 0; j < V * V; j++) elevation[i][j] = INF;
     }
+    ifstream fin("../data/slopes.csv");
+    ld** slopes = (ld**)malloc(sizeof(ld*) * V);
+    for (ll i = 0; i < V; i++)
+    {
+        slopes[i] = (ld*)malloc(sizeof(ld) * V);
+        for (ll j = 0; j < V; j++) fin >> slopes[i][j];
+    }
+    fin.close();
     if (distanceOptimized == false)
     {
         for (ll i = 0; i < V - 1; i++)
@@ -29,9 +37,9 @@ int main()
             for (ll j = 0; j < V - 1; j++)
             {
                 elevation[V * i + j][V * i + j] = 0;
-                elevation[V * i + j][V * i + j + 1] = elevation[V * i + j + 1][V * i + j] = (abs(graph[i][j + 1] - graph[i][j]) < 1.34) ? abs(graph[i][j + 1] - graph[i][j]) : INF;
-                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (abs(graph[i][j] - graph[i + 1][j]) < 1.34) ? abs(graph[i][j] - graph[i + 1][j]) : INF;
-                elevation[V * i + j][V * (i + 1) + j + 1] = elevation[V * (i + 1) + j + 1][V * i + j] = (abs(graph[i + 1][j + 1] - graph[i][j]) < 1.90) ? abs(graph[i + 1][j + 1] - graph[i][j]) : INF;
+                elevation[V * i + j][V * i + j + 1] = elevation[V * i + j + 1][V * i + j] = (slopes[i][j+1] < 15) ? abs(graph[i][j + 1] - graph[i][j]) : INF;
+                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (slopes[i+1][j] < 15) ? abs(graph[i][j] - graph[i + 1][j]) : INF;
+                elevation[V * i + j][V * (i + 1) + j + 1] = elevation[V * (i + 1) + j + 1][V * i + j] = (slopes[i+1][j+1] < 15) ? abs(graph[i + 1][j + 1] - graph[i][j]) : INF;
             }
         }
         for (ll i = 0; i < V - 1; i++)
@@ -39,9 +47,9 @@ int main()
             for (ll j = 1; j < V; j++)
             {
                 elevation[V * i + j][V * i + j] = 0;
-                elevation[V * i + j][V * i + j - 1] = elevation[V * i + j - 1][V * i + j] = (abs(graph[i][j - 1] - graph[i][j]) < 1.34) ? abs(graph[i][j - 1] - graph[i][j]) : INF;
-                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (abs(graph[i][j] - graph[i + 1][j]) < 1.34) ? abs(graph[i][j] - graph[i + 1][j]) : INF;
-                elevation[V * i + j][V * (i + 1) + j - 1] = elevation[V * (i + 1) + j - 1][V * i + j] = (abs(graph[i + 1][j - 1] - graph[i][j]) < 1.90) ?abs(graph[i + 1][j - 1] - graph[i][j]) : INF;
+                elevation[V * i + j][V * i + j - 1] = elevation[V * i + j - 1][V * i + j] = (slopes[i][j-1] < 15) ? abs(graph[i][j - 1] - graph[i][j]) : INF;
+                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (slopes[i+1][j] < 15) ? abs(graph[i][j] - graph[i + 1][j]) : INF;
+                elevation[V * i + j][V * (i + 1) + j - 1] = elevation[V * (i + 1) + j - 1][V * i + j] = (slopes[i+1][j-1] < 15) ? abs(graph[i + 1][j - 1] - graph[i][j]) : INF;
             }
         }
     }
@@ -52,9 +60,9 @@ int main()
             for (ll j = 0; j < V - 1; j++)
             {
                 elevation[V * i + j][V * i + j] = 0;
-                elevation[V * i + j][V * i + j + 1] = elevation[V * i + j + 1][V * i + j] = (abs(graph[i][j + 1] - graph[i][j]) < 1.34) ? pow(pow(abs(graph[i][j + 1] - graph[i][j]), 2) + 25, 0.5) : INF;
-                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (abs(graph[i][j] - graph[i + 1][j]) < 1.34) ? pow(pow(abs(graph[i][j] - graph[i + 1][j]), 2) + 25, 0.5) : INF;
-                elevation[V * i + j][V * (i + 1) + j + 1] = elevation[V * (i + 1) + j + 1][V * i + j] = (abs(graph[i + 1][j + 1] - graph[i][j]) < 1.90) ? pow(pow(abs(graph[i + 1][j + 1] - graph[i][j]), 2) + 50, 0.5) : INF;
+                elevation[V * i + j][V * i + j + 1] = elevation[V * i + j + 1][V * i + j] = (slopes[i][j+1] < 15) ? pow(pow(abs(graph[i][j + 1] - graph[i][j]), 2) + 25, 0.5) : INF;
+                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (slopes[i+1][j] < 15) ? pow(pow(abs(graph[i][j] - graph[i + 1][j]), 2) + 25, 0.5) : INF;
+                elevation[V * i + j][V * (i + 1) + j + 1] = elevation[V * (i + 1) + j + 1][V * i + j] = (slopes[i+1][j+1] < 15) ? pow(pow(abs(graph[i + 1][j + 1] - graph[i][j]), 2) + 50, 0.5) : INF;
             }
         }
         for (ll i = 0; i < V - 1; i++)
@@ -62,9 +70,9 @@ int main()
             for (ll j = 1; j < V; j++)
             {
                 elevation[V * i + j][V * i + j] = 0;
-                elevation[V * i + j][V * i + j - 1] = elevation[V * i + j - 1][V * i + j] = (abs(graph[i][j - 1] - graph[i][j]) < 1.34) ? pow(pow(abs(graph[i][j - 1] - graph[i][j]), 2) + 25, 0.5) : INF;
-                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (abs(graph[i][j] - graph[i + 1][j]) < 1.34) ? pow(pow(abs(graph[i][j] - graph[i + 1][j]), 2) + 25, 0.5) : INF;
-                elevation[V * i + j][V * (i + 1) + j - 1] = elevation[V * (i + 1) + j - 1][V * i + j] = (abs(graph[i + 1][j - 1] - graph[i][j]) < 1.90) ? pow(pow(abs(graph[i + 1][j - 1] - graph[i][j]), 2) + 50, 0.5) : INF;
+                elevation[V * i + j][V * i + j - 1] = elevation[V * i + j - 1][V * i + j] = (slopes[i][j-1] < 15) ? pow(pow(abs(graph[i][j - 1] - graph[i][j]), 2) + 25, 0.5) : INF;
+                elevation[V * (i + 1) + j][V * i + j] = elevation[V * i + j][V * (i + 1) + j] = (slopes[i+1][j] < 15) ? pow(pow(abs(graph[i][j] - graph[i + 1][j]), 2) + 25, 0.5) : INF;
+                elevation[V * i + j][V * (i + 1) + j - 1] = elevation[V * (i + 1) + j - 1][V * i + j] = (slopes[i+1][j-1] < 15) ? pow(pow(abs(graph[i + 1][j - 1] - graph[i][j]), 2) + 50, 0.5) : INF;
             }
         }
     }
@@ -108,11 +116,11 @@ int main()
     FILE* output = fopen("../data/path.txt", "w");
     if (Next[u][v] != -1)
     {
-        fprintf(output, "%Ld %Ld %Lf\n", u / V, u % V, graph[u / V][u % V]);
+        fprintf(output, "%d %d %f\n", u / V, u % V, graph[u / V][u % V]);
         while (u != v)
         {
             u = Next[u][v];
-            fprintf(output, "%Ld %Ld %Lf\n", u / V, u % V, graph[u / V][u % V]);
+            fprintf(output, "%d %d %f\n", u / V, u % V, graph[u / V][u % V]);
         }
     }
     else

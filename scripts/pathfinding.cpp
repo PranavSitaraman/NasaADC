@@ -3,21 +3,22 @@ using namespace std;
 #define INF 1e7
 #define ll int
 #define ld double 
-const ll V = 100;
+const ll dimension = 4000;
+const ll V = 50;
 int main()
 {
-    ld x1 = 3481/40, y1 = 3687/40, x2 = 2709/40, y2 = 589/40;  // start and end points from user selection (0-indexed)
+    ld x1 = 3481 * V/dimension, y1 = 3687 * V/dimension, x2 = 2709 * V/dimension, y2 = 589 * V/dimension;  // start and end points from user selection (0-indexed)
     bool distanceOptimized = true; // true for distance, false for elevation (from user selection)
     ifstream input("../data/grid.txt");
     ld** graph = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)
     {
-        for (ll k = 0; k < 39; k++) input.ignore(100000000L,'\n');
+        for (ll k = 0; k < dimension/V - 1; k++) input.ignore(100000000L,'\n');
         graph[i] = (ld*)malloc(sizeof(ld) * V);
         for (ll j = 0; j < V; j++)
         {
             ld a;
-            for (ll k = 0; k < 39; k++) input >> a;
+            for (ll k = 0; k < dimension/V - 1; k++) input >> a;
             input >> graph[i][j];
         }
     }
@@ -26,12 +27,12 @@ int main()
     ld** slopes = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)
     {
-        for (ll k = 0; k < 39; k++) slopeinput.ignore(100000000L,'\n');
+        for (ll k = 0; k < dimension/V - 1; k++) slopeinput.ignore(100000000L,'\n');
         slopes[i] = (ld*)malloc(sizeof(ld) * V);
         for (ll j = 0; j < V; j++)
         {
             ld a;
-            for (ll k = 0; k < 39; k++) slopeinput >> a;
+            for (ll k = 0; k < dimension/V - 1; k++) slopeinput >> a;
             slopeinput >> slopes[i][j];
         }
     }

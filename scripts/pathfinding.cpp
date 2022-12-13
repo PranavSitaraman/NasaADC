@@ -2,7 +2,7 @@
 using namespace std;
 #define INF 1e7
 #define ll int
-#define ld float 
+#define ld double 
 const ll V = 4000;
 int main()
 {
@@ -13,7 +13,7 @@ int main()
     for (ll i = 0; i < V; i++)
     {
         graph[i] = (ld*)malloc(sizeof(ld) * V);
-        for (ll j = 0; j < V; j++) fscanf(input, "%f", &graph[i][j]);
+        for (ll j = 0; j < V; j++) fscanf(input, "%lf", &graph[i][j]);
     }
     fclose(input);
     ld** elevation = (ld**)malloc(sizeof(ld*) * V * V);
@@ -22,14 +22,14 @@ int main()
         elevation[i] = (ld*)malloc(sizeof(ld) * V * V);
         for (ll j = 0; j < V * V; j++) elevation[i][j] = INF;
     }
-    ifstream fin("../data/slopes.csv");
+    ifstream slopeinput("../data/slopes.csv");
     ld** slopes = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)
     {
         slopes[i] = (ld*)malloc(sizeof(ld) * V);
-        for (ll j = 0; j < V; j++) fin >> slopes[i][j];
+        for (ll j = 0; j < V; j++) slopeinput >> slopes[i][j];
     }
-    fin.close();
+    slopeinput.close();
     if (distanceOptimized == false)
     {
         for (ll i = 0; i < V - 1; i++)
@@ -116,11 +116,11 @@ int main()
     FILE* output = fopen("../data/path.txt", "w");
     if (Next[u][v] != -1)
     {
-        fprintf(output, "%d %d %f\n", u / V, u % V, graph[u / V][u % V]);
+        fprintf(output, "%d %d %lf\n", u / V, u % V, graph[u / V][u % V]);
         while (u != v)
         {
             u = Next[u][v];
-            fprintf(output, "%d %d %f\n", u / V, u % V, graph[u / V][u % V]);
+            fprintf(output, "%d %d %lf\n", u / V, u % V, graph[u / V][u % V]);
         }
     }
     else

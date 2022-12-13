@@ -4,7 +4,7 @@ using namespace std;
 #define ll int
 #define ld double 
 const ll dimension = 4000;
-const ll V = 50;
+const ll V = 100;
 int main()
 {
     ld x1 = 3481 * V/dimension, y1 = 3687 * V/dimension, x2 = 2709 * V/dimension, y2 = 589 * V/dimension;  // start and end points from user selection (0-indexed)

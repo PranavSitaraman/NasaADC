@@ -8,10 +8,10 @@ from PIL import Image
 
 SIZE = 4000
 start = time.time()
-def sigmoid(z):
-    return 1.0/(1 + np.exp(-z))
 
-MODE = 'azimuth'  # 'height' or 'slope' or 'elevation'
+
+MODE = 'azimuth'  # 'height' or 'slope' or 'elevation' or 'azimuth'
+
 
 def elevation(lat, long, height):
     radius = 1737.4 * 1000 + height
@@ -24,13 +24,9 @@ def elevation(lat, long, height):
                math.cos(math.radians(lat)) * math.sin(math.radians(long)) + vec[2] * math.sin(math.radians(lat)))
     return math.degrees(math.asin(rz/dist))
 
+
 def azimuth(lat, long):
     return math.degrees(math.atan2((math.sin(long)*math.cos(lat)), math.sin(lat)))
-
-# read data from csv
-# with open(f'../data/{MODE}.csv', 'r') as file:
-#     reader = csv.reader(file)
-#     arr = [[float(i) for i in row] for row in reader]
 
 
 with open(f'../data/longitude.csv', 'r') as file:
@@ -41,26 +37,22 @@ with open(f'../data/latitude.csv', 'r') as file:
     reader = csv.reader(file)
     latitude = [[float(i) for i in row] for row in reader]
 
-# with open(f'../data/height.csv', 'r') as file:
-#     reader = csv.reader(file)
-#     height = [[float(i) for i in row] for row in reader]
-
-arr = [[azimuth(latitude[i][j], longitude[i][j]) for j in range(SIZE)] for i in range(SIZE)]
-avg = np.sum(arr)/(SIZE * SIZE)
-stddev = ((sum((arr[i][j] - avg)**2 for i in range(SIZE) for j in range(SIZE)))/(SIZE * SIZE))**0.5
-arr = [[math.log(sigmoid((arr[i][j] - avg)/stddev)) for j in range(SIZE)] for i in range(SIZE)]
-# arr = [[elevation(latitude[i][j], longitude[i][j], height[i][j]) for j in range(SIZE)] for i in range(SIZE)]
+if MODE == 'azimuth':
+    arr = [[azimuth(latitude[i][j], longitude[i][j])
+            for j in range(SIZE)] for i in range(SIZE)]
+elif MODE == 'elevation':
+    with open(f'../data/height.csv', 'r') as file:
+        reader = csv.reader(file)
+        height = [[float(i) for i in row] for row in reader]
+    arr = [[elevation(latitude[i][j], longitude[i][j], height[i][j])
+            for j in range(SIZE)] for i in range(SIZE)]
+else:
+    with open(f'../data/{MODE}.csv', 'r') as file:
+        reader = csv.reader(file)
+        arr = [[float(i) for i in row] for row in reader]
 
 print('MAX', MODE, np.amax(arr))
 print('MIN', MODE, np.amin(arr))
-
-
-with open(f'../data/{MODE}.csv', 'w') as file:
-    writer = csv.writer(file)
-    for row in arr:
-        writer.writerow(row)
-
-print(True)
 
 # generate heatmap with seaborn
 ax = sns.heatmap(arr, square=True, cbar=False, xticklabels=False,

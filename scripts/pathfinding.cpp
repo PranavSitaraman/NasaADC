@@ -3,33 +3,51 @@ using namespace std;
 #define INF 1e7
 #define ll int
 #define ld double 
-const ll V = 4000;
+const ll V = 100;
 int main()
 {
-    ld x1 = 3480, y1 = 3686, x2 = 2005, y2 = 1167;  // start and end points from user selection (0-indexed)
+    ld x1 = 3481/40, y1 = 3687/40, x2 = 2709/40, y2 = 589/40;  // start and end points from user selection (0-indexed)
     bool distanceOptimized = true; // true for distance, false for elevation (from user selection)
-    FILE* input = fopen("../data/grid.txt", "r");
+    ifstream input("../data/grid.txt");
     ld** graph = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)
     {
+        for (ll k = 0; k < 39; k++) input.ignore(100000000L,'\n');
         graph[i] = (ld*)malloc(sizeof(ld) * V);
-        for (ll j = 0; j < V; j++) fscanf(input, "%lf", &graph[i][j]);
+        for (ll j = 0; j < V; j++)
+        {
+            ld a;
+            for (ll k = 0; k < 39; k++) input >> a;
+            input >> graph[i][j];
+        }
     }
-    fclose(input);
+    input.close();
+    ifstream slopeinput("../data/slopes.csv");
+    ld** slopes = (ld**)malloc(sizeof(ld*) * V);
+    for (ll i = 0; i < V; i++)
+    {
+        for (ll k = 0; k < 39; k++) slopeinput.ignore(100000000L,'\n');
+        slopes[i] = (ld*)malloc(sizeof(ld) * V);
+        for (ll j = 0; j < V; j++)
+        {
+            ld a;
+            for (ll k = 0; k < 39; k++) slopeinput >> a;
+            slopeinput >> slopes[i][j];
+        }
+    }
+    slopeinput.close();
+    ll** Next = (ll**)malloc(sizeof(ll*) * V * V);
+    for (ll i = 0; i < V * V; i++)
+    {
+        Next[i] = (ll*)malloc(sizeof(ll) * V * V);
+        for (ll j = 0; j < V * V; j++) Next[i][j] = -1;
+    }
     ld** elevation = (ld**)malloc(sizeof(ld*) * V * V);
     for (ll i = 0; i < V * V; i++)
     {
         elevation[i] = (ld*)malloc(sizeof(ld) * V * V);
         for (ll j = 0; j < V * V; j++) elevation[i][j] = INF;
     }
-    ifstream slopeinput("../data/slopes.csv");
-    ld** slopes = (ld**)malloc(sizeof(ld*) * V);
-    for (ll i = 0; i < V; i++)
-    {
-        slopes[i] = (ld*)malloc(sizeof(ld) * V);
-        for (ll j = 0; j < V; j++) slopeinput >> slopes[i][j];
-    }
-    slopeinput.close();
     if (distanceOptimized == false)
     {
         for (ll i = 0; i < V - 1; i++)
@@ -76,23 +94,10 @@ int main()
             }
         }
     }
-    ld** dis = (ld**)malloc(sizeof(ld*) * V * V);
-    for (ll i = 0; i < V * V; i++)
-    {
-        dis[i] = (ld*)malloc(sizeof(ld) * V * V);
-        for (ll j = 0; j < V * V; j++) dis[i][j] = 0;
-    }
-    ll** Next = (ll**)malloc(sizeof(ll*) * V * V);
-    for (ll i = 0; i < V * V; i++)
-    {
-        Next[i] = (ll*)malloc(sizeof(ll) * V * V);
-        for (ll j = 0; j < V * V; j++) Next[i][j] = -1;
-    }
     for (ll i = 0; i < V * V; i++)
     {
         for (ll j = 0; j < V * V; j++)
         {
-            dis[i][j] = elevation[i][j];
             if (elevation[i][j] != INF) Next[i][j] = j;
         }
     }
@@ -102,10 +107,10 @@ int main()
         {
             for (ll j = 0; j < V * V; j++)
             {
-                if (dis[i][k] == INF || dis[k][j] == INF) continue;
-                if (dis[i][j] > dis[i][k] + dis[k][j])
+                if (elevation[i][k] == INF || elevation[k][j] == INF) continue;
+                if (elevation[i][j] > elevation[i][k] + elevation[k][j])
                 {
-                    dis[i][j] = dis[i][k] + dis[k][j];
+                    elevation[i][j] = elevation[i][k] + elevation[k][j];
                     Next[i][j] = Next[i][k];
                 }
             }
@@ -113,20 +118,17 @@ int main()
     }
     ll u = x1 * V + y2;
     ll v = x2 * V + y2;
-    FILE* output = fopen("../data/path.txt", "w");
+    ofstream output("../data/path.txt");
     if (Next[u][v] != -1)
     {
-        fprintf(output, "%d %d %lf\n", u / V, u % V, graph[u / V][u % V]);
+        output << u / V << " " << u % V << " " << graph[u / V][u % V] << endl;
         while (u != v)
         {
             u = Next[u][v];
-            fprintf(output, "%d %d %lf\n", u / V, u % V, graph[u / V][u % V]);
+            output << u / V << " " << u % V << " " << graph[u / V][u % V] << endl;
         }
     }
-    else
-    {
-        return -1; // tell user "no! these settings will not work!"
-    }
-    fclose(output);
+    else return -1; // tell user "no! these settings will not work!"
+    output.close();
     return 0;
 }

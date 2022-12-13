@@ -8,6 +8,8 @@ from PIL import Image
 
 SIZE = 4000
 start = time.time()
+def sigmoid(z):
+    return 1.0/(1 + np.exp(-z))
 
 MODE = 'azimuth'  # 'height' or 'slope' or 'elevation'
 
@@ -46,7 +48,7 @@ with open(f'../data/latitude.csv', 'r') as file:
 arr = [[azimuth(latitude[i][j], longitude[i][j]) for j in range(SIZE)] for i in range(SIZE)]
 avg = np.sum(arr)/(SIZE * SIZE)
 stddev = ((sum((arr[i][j] - avg)**2 for i in range(SIZE) for j in range(SIZE)))/(SIZE * SIZE))**0.5
-arr = [[math.log((arr[i][j] - avg)/stddev) for j in range(SIZE)] for i in range(SIZE)]
+arr = [[math.log(sigmoid((arr[i][j] - avg)/stddev)) for j in range(SIZE)] for i in range(SIZE)]
 # arr = [[elevation(latitude[i][j], longitude[i][j], height[i][j]) for j in range(SIZE)] for i in range(SIZE)]
 
 print('MAX', MODE, np.amax(arr))

@@ -126,7 +126,7 @@ int main()
         while (u != v)
         {
             u = Next[u][v];
-            output << u / V << " " << u % V << " " << graph[u / V][u % V] << endl;
+            output << (u / V) * dimension/V << " " << (u % V) * dimension/V << " " << graph[u / V][u % V] << endl;
         }
     }
     else return -1; // tell user "no! these settings will not work!"

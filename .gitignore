@@ -1,8 +1,8 @@
-# large data files
+# Large data files
 data/*.csv
 data/grid.txt
 data/*.xyz
 
 # UE5 content
 Lunar_Base_Demo/Saved
-Lunar_Base_Demo/Content/StarterContent
+Lunar_Base_Demo/Content

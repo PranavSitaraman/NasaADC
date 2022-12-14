@@ -7,12 +7,12 @@ const ll dimension = 4000;
 const ll V = 50;
 int main()
 {
-    ll x1 = 9, y1 = 9, x2 = 7, y2 = 1;
+    ll x1 = 480, y1 = 320, x2 = 2000, y2 = 2800;
     bool distanceOptimized = true;
-    x1 *= 400 * ((ld)V)/dimension;
-    y1 *= 400 * ((ld)V)/dimension;
-    x2 *= 400 * ((ld)V)/dimension;
-    y2 *= 400 * ((ld)V)/dimension;
+    x1 *= ((ld)V)/dimension;
+    y1 *= ((ld)V)/dimension;
+    x2 *= ((ld)V)/dimension;
+    y2 *= ((ld)V)/dimension;
     ifstream inputgrid("../data/grid.txt");
     ld** graph = (ld**)malloc(sizeof(ld*) * V);
     for (ll i = 0; i < V; i++)

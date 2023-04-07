@@ -1,8 +1,8 @@
 /*
-File: heightmap.c
-Team: Ad Lunam
-NASA ADC 2022
-*/
+ * File: heightmap.c
+ * Team Ad Lunam
+ * NASA ADC 2022-2023
+ */
 
 // all data is in meters (m)
 
@@ -28,7 +28,7 @@ int main()
     printf("STARTED READING | %lld | %lld \n", 0, 0);
 
     // read longitude values
-    FILE* longFile = fopen("../data/longitude.csv", "r");
+    FILE* longFile = fopen("data/longitude.csv", "r");
     if (longFile == NULL) {
         printf("LONGITUDE CSV ERROR\n");
         return 1;
@@ -45,7 +45,7 @@ int main()
     printf("READ LONGITUDE | %lld | %lld \n", long_time - start_time, long_time - start_time);
 
     // read latitude values
-    FILE* latFile = fopen("../data/latitude.csv", "r");
+    FILE* latFile = fopen("data/latitude.csv", "r");
     if (latFile == NULL) {
         printf("LATITUDE CSV ERROR\n");
         return 1;
@@ -62,7 +62,7 @@ int main()
     printf("READ LATITUDE | %lld | %lld \n", lat_time - start_time, lat_time - long_time);
 
     // read height values
-    FILE* heightFile = fopen("../data/height.csv", "r");
+    FILE* heightFile = fopen("data/height.csv", "r");
     if (heightFile == NULL) {
         printf("HEIGHT CSV ERROR\n");
         return 1;
@@ -96,7 +96,7 @@ int main()
     printf("MIN: %lf m\nMAX: %lf m\n", minZ, maxZ);
 
     // write point cloud data to .xyz file
-    FILE* pointFile = fopen("../data/points.xyz", "w");
+    FILE* pointFile = fopen("data/points.xyz", "w");
     if (pointFile == NULL) {
         printf("ERROR WRITING POINT CLOUD\n");
         return 1;
@@ -110,8 +110,8 @@ int main()
     printf("WROTE POINT CLOUD | %lld | %lld \n", xyz_time - start_time, xyz_time - calc_time);
 
     // parallelly write z-value to grid and write 16 bit scaled value to .pgm image file
-    FILE* gridFile = fopen("../data/grid.txt", "w");
-    FILE* imageFile = fopen("../data/heightmap.pgm", "wb");
+    FILE* gridFile = fopen("data/grid.txt", "w");
+    FILE* imageFile = fopen("data/heightmap.pgm", "wb");
     double scale_value = fabs(maxZ - minZ);
     if (gridFile == NULL) {
         printf("ERROR WRITING GRID DATA\n");
@@ -138,7 +138,7 @@ int main()
     printf("WROTE DATA | %lld | %lld \n", write_time - start_time, write_time - calc_time);
 
     // use ImageMagick to convert .pgm to .png format
-    system("magick ..\\data\\heightmap.pgm ..\\data\\heightmap.png");
+    system("magick data\\heightmap.pgm data\\heightmap.png");
     time_t done_time = time(NULL);
     printf("DONE | %lld | %lld\n", done_time - start_time, done_time - write_time);
 

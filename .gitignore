@@ -5,3 +5,9 @@ data/*.xyz
 
 # UE5 content
 Lunar_Base_Demo/Saved
+Lunar_Base_Demo/Binaries
+Lunar_Base_Demo/Build
+Lunar_Base_Demo/Config
+Lunar_Base_Demo/Intermediate
+Lunar_Base_Demo/Content/*.umap
+Lunar_Base_Demo/Content/*.uasset

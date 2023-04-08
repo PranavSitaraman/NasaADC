@@ -10,13 +10,15 @@ import time
 import csv
 import seaborn as sns
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from PIL import Image
 
 # height, slope, elevation, azimuth
 MODE = "all"
-CBAR = False
-
+CBAR = True
+CMAP = mpl.colormaps['gist_rainbow_r']
+CMAP.set_bad('white')
 SIZE = 4000
 start = time.time()
 
@@ -52,18 +54,18 @@ if MODE == 'height' or MODE == 'all':
 
     # generate heatmap with seaborn
     ax = sns.heatmap(height, square=True, cbar=CBAR, xticklabels=False,
-                    yticklabels=False, cmap="gist_rainbow_r")
+                    yticklabels=False, cmap=CMAP)
     print('HEATMAP:', time.time() - start)
     # plt.show()
-    plt.savefig(f'data/height.png', dpi=2048,
+    plt.savefig(f'height.png', dpi=2048,
                 transparent=True, format='png', bbox_inches='tight')
 
     # crop extra border, make it square
     size = SIZE, SIZE
-    png = Image.open('data/height.png')
+    png = Image.open('height.png')
     cropped = png.crop(png.getbbox())
     cropped.thumbnail(size, Image.Resampling.LANCZOS)
-    cropped.save('data/height.png')
+    cropped.save('height.png')
 
 # slope
 if MODE == 'slope' or MODE == 'all':
@@ -74,18 +76,18 @@ if MODE == 'slope' or MODE == 'all':
 
     # generate heatmap with seaborn
     ax = sns.heatmap(slope, square=True, cbar=CBAR, xticklabels=False,
-                    yticklabels=False, cmap="gist_rainbow_r")
+                    yticklabels=False, cmap=CMAP)
     print('HEATMAP:', time.time() - start)
     # plt.show()
-    plt.savefig(f'data/slope.png', dpi=2048,
+    plt.savefig(f'slope.png', dpi=2048,
                 transparent=True, format='png', bbox_inches='tight')
 
     # crop extra border, make it square
     size = SIZE, SIZE
-    png = Image.open('data/slope.png')
+    png = Image.open('slope.png')
     cropped = png.crop(png.getbbox())
     cropped.thumbnail(size, Image.Resampling.LANCZOS)
-    cropped.save('data/slope.png')
+    cropped.save('slope.png')
 
 # elevation angle
 if MODE == 'elevation' or MODE == 'all':
@@ -98,8 +100,7 @@ if MODE == 'elevation' or MODE == 'all':
             lat = latitude[i][j]
             radius = lunarRadius + height[i][j]
             x = radius * math.cos(math.radians(lat)) * math.cos(math.radians(long))
-            y = radius * math.cos(math.radians(lat)) * \
-                math.sin(math.radians(long))
+            y = radius * math.cos(math.radians(lat)) * math.sin(math.radians(long))
             z = radius * math.sin(math.radians(lat))
             reference = np.array([x, y, z])
             result = target - reference
@@ -114,22 +115,24 @@ if MODE == 'elevation' or MODE == 'all':
     print('MAX', np.amax(elevation))
     print('MIN', np.amin(elevation))
     print('CALCULATION:', time.time() - start)
-    np.savetxt("data/elevation.csv", elevation, delimiter=",")
+    np.savetxt("elevation.csv", elevation, delimiter=",")
+
+    c = mpl.colormaps['gist_rainbow_r']
 
     # generate heatmap with seaborn
     ax = sns.heatmap(elevation, square=True, cbar=CBAR, xticklabels=False,
-                    yticklabels=False, cmap="gist_rainbow_r")
+                    yticklabels=False, cmap=CMAP)
     print('HEATMAP:', time.time() - start)
     # plt.show()
-    plt.savefig(f'data/elevation.png', dpi=2048,
+    plt.savefig(f'elevation.png', dpi=2048,
                 transparent=True, format='png', bbox_inches='tight')
 
     # crop extra border, make it square
     size = SIZE, SIZE
-    png = Image.open('data/elevation.png')
+    png = Image.open('elevation.png')
     cropped = png.crop(png.getbbox())
     cropped.thumbnail(size, Image.Resampling.LANCZOS)
-    cropped.save('data/elevation.png')
+    cropped.save('elevation.png')
 
 # azimuth angle
 if MODE == 'azimuth' or MODE == 'all':
@@ -148,19 +151,19 @@ if MODE == 'azimuth' or MODE == 'all':
     print('MAX', np.amax(azimuth))
     print('MIN', np.amin(azimuth))
     print('CALCULATION:', time.time() - start)
-    np.savetxt("data/azimuth.csv", azimuth, delimiter=",")
+    np.savetxt("azimuth.csv", azimuth, delimiter=",")
 
     # generate heatmap with seaborn
     ax = sns.heatmap(azimuth, square=True, cbar=CBAR, xticklabels=False,
-                    yticklabels=False, cmap="gist_rainbow_r")
+                    yticklabels=False, cmap=CMAP)
     print('HEATMAP:', time.time() - start)
     # plt.show()
-    plt.savefig(f'data/azimuth.png', dpi=2048,
+    plt.savefig(f'azimuth.png', dpi=2048,
                 transparent=True, format='png', bbox_inches='tight')
 
     # crop extra border, make it square
     size = SIZE, SIZE
-    png = Image.open('data/azimuth.png')
+    png = Image.open('azimuth.png')
     cropped = png.crop(png.getbbox())
     cropped.thumbnail(size, Image.Resampling.LANCZOS)
-    cropped.save('data/azimuth.png')
+    cropped.save('azimuth.png')
